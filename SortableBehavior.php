@@ -38,9 +38,10 @@ class SortableBehavior extends Behavior
 	 */
 	public function beforeSave()
 	{
-		if ($this->owner->{$this->attribute} === null) {
-			$nextNum = (int) $this->owner::find()->max($this->attribute) + 1;
-			$this->owner->{$this->attribute} = $nextNum;
+		$owner = $this->owner;
+		if ($owner->{$this->attribute} === null) {
+			$nextNum = (int) $owner::find()->max($this->attribute) + 1;
+			$owner->{$this->attribute} = $nextNum;
 		}
 	}
 
@@ -53,8 +54,9 @@ class SortableBehavior extends Behavior
 	{
 		$orders = [];
 		$i = 0;
+		$owner = $this->owner;
 		foreach ($order as $id) {
-			$model = $this->owner::findOne($id);
+			$model = $owner::findOne($id);
 			if ($model) {
 				$model->{$this->attribute} = $i;
 				$model->update();
