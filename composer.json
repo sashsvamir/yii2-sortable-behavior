@@ -1,0 +1,29 @@
+{
+    "name": "sashsvamir/yii2-sortable-behavior",
+    "description": "Add sorting perform to your model, also GridView drag sorting available.",
+    "type": "yii2-extension",
+    "keywords": [
+        "sashsvamir",
+        "yii2",
+        "sort",
+        "sorting",
+        "sortable",
+        "order"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alexander Shchukin",
+            "email": "alexander@shykin.ru"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "^2.0",
+        "sashsvamir/yii2-js-sortablejs": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "sashsvamir\\sortableBehavior\\": ""
+        }
+    }
+}
