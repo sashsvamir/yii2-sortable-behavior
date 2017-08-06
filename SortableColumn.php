@@ -1,7 +1,6 @@
 <?php
 namespace sashsvamir\sortableBehavior;
 
-use sashsvamir\sortablejs\SortablejsAsset;
 use yii\grid\Column;
 use yii\base\InvalidConfigException;
 use yii\helpers\Html;
@@ -56,22 +55,29 @@ class SortableColumn extends Column
 		$id = $this->grid->options['id'];
 		$view = $this->grid->getView();
 
-		$view->registerAssetBundle(SortablejsAsset::className());
-		// $view->registerJsFile('https://raw.githubusercontent.com/RubaXa/Sortable/master/Sortable.min.js');
+		$view->registerAssetBundle(\yii\jui\JuiAsset::className());
 
 		$options = Json::encode([
-			'group' => $id . '-group',
-			// 'filter' => '.ignore-elements',
 			'handle' => '.drag-handle',
-			'draggable' => 'tr',
-			'dataIdAttr' => 'data-key',
-			'onSort' => new JsExpression(<<< JS
-
-				function (evt) {
-					// console.log(evt);
+			'items' => '> tr',
+			// fix table row size
+			'helper' => new \yii\web\JsExpression(
+<<< JS
+				function(e, ui) {
+	                ui.children().each(function() {
+	                   $(this).width($(this).width());
+	                });
+	                return ui;
+	            }
+JS
+            ),
+			'update' => new JsExpression(
+<<< JS
+				function (e, ui) {
+					
 					var order = {};
-					var items = evt.item.parentNode.querySelectorAll('tr');
-					for (var i=0; i<items.length; i++) {
+					var items = ui.item[0].parentNode.querySelectorAll('tr');
+					for (var i = 0; i < items.length; i++) {
 						order[i] = items[i].getAttribute('data-key');
 					}
 					var data = {
@@ -102,9 +108,10 @@ class SortableColumn extends Column
 JS
 			),
 		]);
-		$view->registerJs("var sortable_{$id} = Sortable.create(document.querySelector( '#{$id} tbody'), $options)");
+		$view->registerJs("var sortable_{$id} = $('#{$id} tbody').sortable($options);");
 
-		$view->registerCss('
+		$view->registerCss(
+<<< CSS
 			.drag-handle {
 				cursor: move;
 				cursor: -webkit-grabbing;
@@ -112,7 +119,8 @@ JS
 				font-weight: bold;
 				color: #23527c;
 			}
-		');
+CSS
+		);
 
 	}
 
